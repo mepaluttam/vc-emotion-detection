@@ -69,7 +69,7 @@ def main():
     try:
         model_path = "./models/model.pkl"
         test_data_path = "./data/processed/test_bow.csv"
-        metrics_output_path = "metric.json"
+        metrics_output_path = "./reports/metric.json"
 
         model = load_model(model_path)
         X_test, y_test = load_test_data(test_data_path)
