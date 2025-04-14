@@ -68,7 +68,7 @@ def save_metrics(metrics: dict, output_path: str):
 def main():
     try:
         model_path = "./models/model.pkl"
-        test_data_path = "./data/processed/test_bow.csv"
+        test_data_path = "./data/processed/test_tfidf.csv"
         metrics_output_path = "./reports/metric.json"
 
         model = load_model(model_path)

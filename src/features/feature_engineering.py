@@ -3,7 +3,7 @@ import pandas as pd
 import os
 import yaml
 import logging
-from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer
 
 # ---------------- Logger Configuration ----------------
 logger = logging.getLogger("feature_engineering")
@@ -36,9 +36,9 @@ def load_processed_data(train_path: str, test_path: str):
         logger.error(f"Error loading data: {e}")
         raise
 
-def apply_bow(train_df: pd.DataFrame, test_df: pd.DataFrame, max_features: int):
+def apply_tfidf(train_df: pd.DataFrame, test_df: pd.DataFrame, max_features: int):
     try:
-        logger.info("Applying Bag-of-Words (CountVectorizer)...")
+        logger.info("Applying tfidf ()...")
         train_df['content'] = train_df['content'].fillna("")
         test_df['content'] = test_df['content'].fillna("")
 
@@ -48,7 +48,7 @@ def apply_bow(train_df: pd.DataFrame, test_df: pd.DataFrame, max_features: int):
         X_test = test_df['content'].values
         y_test = test_df['sentiment'].values
 
-        vectorizer = CountVectorizer(max_features=max_features)
+        vectorizer = TfidfVectorizer(max_features=max_features)
         X_train_bow = vectorizer.fit_transform(X_train)
         X_test_bow = vectorizer.transform(X_test)
 
@@ -58,17 +58,17 @@ def apply_bow(train_df: pd.DataFrame, test_df: pd.DataFrame, max_features: int):
         train_features['label'] = y_train
         test_features['label'] = y_test
 
-        logger.info("Bag-of-Words transformation completed.")
+        logger.info("tfidf transformation completed.")
         return train_features, test_features
     except Exception as e:
-        logger.error(f"Error during BoW transformation: {e}")
+        logger.error(f"Error during tfidf transformation: {e}")
         raise
 
 def save_feature_data(train_df: pd.DataFrame, test_df: pd.DataFrame, save_path: str):
     try:
         os.makedirs(save_path, exist_ok=True)
-        train_df.to_csv(os.path.join(save_path, "train_bow.csv"), index=False)
-        test_df.to_csv(os.path.join(save_path, "test_bow.csv"), index=False)
+        train_df.to_csv(os.path.join(save_path, "train_tfidf.csv"), index=False)
+        test_df.to_csv(os.path.join(save_path, "test_tfidf.csv"), index=False)
         logger.info(f"Feature-engineered data saved to {save_path}")
     except Exception as e:
         logger.error(f"Failed to save feature files: {e}")
@@ -80,7 +80,8 @@ def main():
         # Paths
         train_path = "./data/interim/train_processed.csv"
         test_path = "./data/interim/test_processed.csv"
-        save_path = os.path.join("data", "processed")
+
+        save_path = os.path.join("data","processed")
         params_path = "params.yaml"
 
         # Load config and data
@@ -88,7 +89,7 @@ def main():
         train_df, test_df = load_processed_data(train_path, test_path)
 
         # Feature engineering
-        train_bow, test_bow = apply_bow(train_df, test_df, max_features)
+        train_bow, test_bow = apply_tfidf(train_df, test_df, max_features)
 
         # Save feature-engineered data
         save_feature_data(train_bow, test_bow, save_path)

@@ -62,7 +62,7 @@ def save_model(model, model_path: str):
 # ---------------- Main Pipeline ----------------
 def main():
     try:
-        train_path = "./data/processed/train_bow.csv"
+        train_path = "./data/processed/train_tfidf.csv"
         model_path = "./models/model.pkl"
         params_path = "params.yaml"
 
